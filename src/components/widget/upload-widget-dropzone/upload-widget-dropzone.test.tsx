@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+// <reference types="vitest" />
 
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {render, screen} from "@testing-library/react";
@@ -26,7 +26,7 @@ describe("UploadWidgetDropzone", () => {
     it("should render the dropzone", () => {
         const mockState = createMockDropzoneState();
 
-        (useDropzone as unknown as any).mockReturnValue(mockState);
+        vi.mocked(useDropzone).mockReturnValue(mockState);
 
         render(<UploadWidgetDropzone/>);
 
@@ -38,7 +38,7 @@ describe("UploadWidgetDropzone", () => {
     it("should show drag active state", () => {
         const mockState = createMockDropzoneState({isDragActive: true});
 
-        (useDropzone as unknown as any).mockReturnValue(mockState);
+        vi.mocked(useDropzone).mockReturnValue(mockState);
 
         render(<UploadWidgetDropzone/>);
 
@@ -50,7 +50,7 @@ describe("UploadWidgetDropzone", () => {
     it("should show default state with instructions", () => {
         const mockState = createMockDropzoneState();
 
-        (useDropzone as unknown as any).mockReturnValue(mockState);
+        vi.mocked(useDropzone).mockReturnValue(mockState);
 
         render(<UploadWidgetDropzone/>);
 
