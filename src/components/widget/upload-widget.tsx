@@ -2,17 +2,32 @@ import {UploadWidgetDropzone} from "./upload-widget-dropzone.tsx";
 import {UploadWidgetHeader} from "./upload-widget-header.tsx";
 import {UploadWidgetUploadList} from "./upload-widget-upload-list.tsx";
 import {Divider} from "../ui/divider.tsx";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import {useState} from "react";
 
 export function UploadWidget() {
-    return (
-        <div className="bg-zinc-900 w-full overflow-hidden max-w-[360px] rounded-xl shadow-shape">
-            <UploadWidgetHeader />
+    const [isWidgetOpen, setIsWidgetOpen] = useState<boolean>(true);
 
-            <div className="flex flex-col gap-4 py-3">
-                <UploadWidgetDropzone />
-                <Divider/>
-                <UploadWidgetUploadList />
+    return (
+        <Collapsible.Root
+            open={isWidgetOpen}
+            onOpenChange={setIsWidgetOpen}
+        >
+            <div
+                className="bg-zinc-900 overflow-hidden w-[360px] rounded-xl shadow-shape"
+                role="region"
+                aria-label="File upload widget"
+            >
+                <UploadWidgetHeader />
+
+                <Collapsible.Content className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp">
+                    <div className="flex flex-col gap-4 py-3">
+                        <UploadWidgetDropzone />
+                        <Divider />
+                        <UploadWidgetUploadList />
+                    </div>
+                </Collapsible.Content>
             </div>
-        </div>
+        </Collapsible.Root>
     );
 }
