@@ -1,5 +1,7 @@
 import type {ComponentProps} from "react";
 import {tv, type VariantProps} from "tailwind-variants";
+import {disabledState, focusRing} from "../../styles/accessibility";
+import {transitions} from "../../styles/tokens";
 
 const buttonVariants = tv({
     base: [
@@ -19,19 +21,13 @@ const buttonVariants = tv({
         "hover:bg-zinc-800",
 
         // Transitions
-        "transition-all duration-200",
+        ...transitions.default,
 
         // Focus States (WCAG 2.1 AA)
-        "focus:outline-none",
-        "focus:ring-1",
-        "focus:ring-violet-500",
-        "focus:ring-offset-1",
-        "focus:ring-offset-zinc-950",
+        ...focusRing,
 
         // Disabled States
-        "disabled:opacity-50",
-        "disabled:pointer-events-none",
-        "disabled:cursor-not-allowed",
+        ...disabledState,
     ],
 
     variants: {
@@ -58,7 +54,7 @@ export function Button({
     return (
         <button
             type={type}
-            className={buttonVariants({ size, className })}
+            className={buttonVariants({size, className})}
             {...props}
         />
     );

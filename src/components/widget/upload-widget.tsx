@@ -3,7 +3,7 @@ import {UploadWidgetUploadList} from "./upload-widget-upload-list.tsx";
 import {Divider} from "../ui/divider.tsx";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import {useState} from "react";
-import {UploadWidgetDropzone} from "./upload-widget-dropzone.tsx";
+import {UploadWidgetDropzone} from "./upload-widget-dropzone/upload-widget-dropzone.tsx";
 
 export function UploadWidget() {
     const [isWidgetOpen, setIsWidgetOpen] = useState<boolean>(true);
