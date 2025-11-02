@@ -1,6 +1,7 @@
 import {Maximize2, Minimize2} from "lucide-react";
-import {Button} from "../ui/button";
+import {Button} from "../../ui/button.tsx";
 import * as Collapsible from "@radix-ui/react-collapsible";
+import {UploadWidgetTile} from "../upload-widget-title.tsx";
 
 export function UploadWidgetHeader() {
     return (
@@ -8,9 +9,7 @@ export function UploadWidgetHeader() {
             className="w-full p-4 bg-white/3 border-zinc-800 border-b flex items-center justify-between"
             role="banner"
         >
-            <h1 className="text-sm font-medium text-white">
-                Upload files
-            </h1>
+            <UploadWidgetTile />
 
             <Collapsible.Trigger asChild>
                 <Button
@@ -22,11 +21,13 @@ export function UploadWidgetHeader() {
                         strokeWidth={1.5}
                         className="size-4 group-data-[state=open]:block group-data-[state=closed]:hidden"
                         aria-hidden="true"
+                        data-testid="minimize-icon"
                     />
                     <Maximize2
                         strokeWidth={1.5}
                         className="size-4 group-data-[state=open]:hidden group-data-[state=closed]:block"
                         aria-hidden="true"
+                        data-testid="maximize-icon"
                     />
                 </Button>
             </Collapsible.Trigger>
