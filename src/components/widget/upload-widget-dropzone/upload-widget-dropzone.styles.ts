@@ -1,4 +1,3 @@
-
 import {tv} from "tailwind-variants";
 import {focusRingLarge} from "../../../styles/accessibility";
 import {interactionColors, textColors, transitions} from "../../../styles/tokens";
@@ -42,7 +41,7 @@ export const dropzoneVariants = tv({
             "font-medium",
         ],
         instructions: [
-            "text-xs",
+            "text-[0.750rem]",
             textColors.onDark,
         ],
     },
