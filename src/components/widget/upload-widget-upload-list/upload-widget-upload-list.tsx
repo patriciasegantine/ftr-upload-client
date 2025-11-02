@@ -2,7 +2,6 @@ import {UploadWidgetUploadItem} from "../upload-widget-upload-item/upload-widget
 import type {UploadItems} from "../../../@types/updload-items.ts";
 
 export function UploadWidgetUploadList() {
-
     const uploads: UploadItems[] = [
         {
             filename: "screenshot.png",
@@ -28,9 +27,9 @@ export function UploadWidgetUploadList() {
             progress: 10,
             status: "error"
         },
-
     ]
-    const totalUploads = uploads.length ? uploads.length : 0;
+    const isUploadListEmpty = true
+    const totalUploads = !isUploadListEmpty ? uploads.length : 0;
 
     return (
         <div className="px-3 flex flex-col gap-3">
@@ -38,21 +37,36 @@ export function UploadWidgetUploadList() {
             Uploaded files <span className="text-zinc-400">({totalUploads})</span>
           </span>
 
-            <div className="flex flex-col gap-2">
-                {
-                    uploads.map(({filename, status, progress, compressedSize, originalSize, compressionRate}) => (
-                        <UploadWidgetUploadItem
-                            key={filename}
-                            filename={filename}
-                            compressedSize={compressedSize}
-                            compressionRate={compressionRate}
-                            originalSize={originalSize}
-                            status={status}
-                            progress={progress}
-                        />
-                    ))
-                }
-            </div>
+            {
+                isUploadListEmpty ? (
+                    <span className="text-xs text-zinc-400">No uploads added</span>
+                ) : (
+                    <div className="flex flex-col gap-2">
+                        {
+                            uploads.map(({
+                                             filename,
+                                             status,
+                                             progress,
+                                             compressedSize,
+                                             originalSize,
+                                             compressionRate
+                                         }) => (
+                                <UploadWidgetUploadItem
+                                    key={filename}
+                                    filename={filename}
+                                    compressedSize={compressedSize}
+                                    compressionRate={compressionRate}
+                                    originalSize={originalSize}
+                                    status={status}
+                                    progress={progress}
+                                />
+                            ))
+                        }
+                    </div>
+                )
+            }
+
+
         </div>
     );
 }
