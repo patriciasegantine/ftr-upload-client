@@ -1,7 +1,11 @@
 import {useDropzone} from "react-dropzone";
 import {dropzoneVariants} from "./upload-widget-dropzone.styles";
+import {CircularProgressBar} from "../../ui/circular-progress-bar/circular-progress-bar.tsx";
 
 export function UploadWidgetDropzone() {
+    const isThereAnyPendedUpload = true;
+    const uploadGlobalPercentage = 66;
+
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
         multiple: true,
         accept: {
@@ -32,6 +36,22 @@ export function UploadWidgetDropzone() {
                     aria-label="File upload input for PNG and JPG images"
                     {...getInputProps()}
                 />
+                {
+                    isThereAnyPendedUpload ? (
+                        <div className="flex flex-col gap-2.5 items-center">
+                            <CircularProgressBar
+                                progress={uploadGlobalPercentage}
+                                size={56}
+                                strokeWidth={4}
+                            />
+                            <span className="text-xs">Uploading 2 files...</span>
+                        </div>
+                    ) : (
+                        <>
+                            <span className={styles.text()}>Drop your files here or</span>
+                            <span className={styles.textLink()}>click to open picker</span>
+                        </>
+                    )}
 
                 {isDragActive ? (
                     <span className={styles.text()}>
@@ -39,8 +59,7 @@ export function UploadWidgetDropzone() {
                     </span>
                 ) : (
                     <>
-                        <span className={styles.text()}>Drop your files here or</span>
-                        <span className={styles.textLink()}>click to open picker</span>
+
                     </>
                 )}
             </div>
