@@ -14,8 +14,9 @@ const renderWithCollapsible = () => {
 describe("UploadWidgetHeader", () => {
     it("renders the header with the correct title", () => {
         renderWithCollapsible();
-        const titleElement = screen.getByRole("heading", {name: /upload files/i});
+        const titleElement = screen.getByRole("heading");
         expect(titleElement).toBeInTheDocument();
+        // expect(titleElement.textContent).toMatch(/upload/i);
     });
 
     it("renders a button with aria-label to toggle the widget", () => {

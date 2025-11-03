@@ -28,7 +28,7 @@ export function UploadWidgetUploadList() {
             status: "error"
         },
     ]
-    const isUploadListEmpty = true
+    const isUploadListEmpty = false
     const totalUploads = !isUploadListEmpty ? uploads.length : 0;
 
     return (
