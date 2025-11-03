@@ -6,7 +6,7 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 const renderWithCollapsible = () => {
     return render(
         <Collapsible.Root>
-            <UploadWidgetHeader />
+            <UploadWidgetHeader/>
         </Collapsible.Root>
     );
 };
@@ -14,13 +14,13 @@ const renderWithCollapsible = () => {
 describe("UploadWidgetHeader", () => {
     it("renders the header with the correct title", () => {
         renderWithCollapsible();
-        const titleElement = screen.getByRole("heading", { name: /upload files/i });
+        const titleElement = screen.getByRole("heading", {name: /upload files/i});
         expect(titleElement).toBeInTheDocument();
     });
 
     it("renders a button with aria-label to toggle the widget", () => {
         renderWithCollapsible();
-        const toggleButton = screen.getByRole("button", { name: /toggle upload widget/i });
+        const toggleButton = screen.getByRole("button", {name: /toggle upload widget/i});
         expect(toggleButton).toBeInTheDocument();
     });
 
@@ -29,11 +29,11 @@ describe("UploadWidgetHeader", () => {
 
         render(
             <Collapsible.Root defaultOpen={true}>
-                <UploadWidgetHeader />
+                <UploadWidgetHeader/>
             </Collapsible.Root>
         );
 
-        const toggleButton = screen.getByRole("button", { name: /toggle upload widget/i });
+        const toggleButton = screen.getByRole("button", {name: /toggle upload widget/i});
 
         // When open, button should have data-state="open"
         expect(toggleButton).toHaveAttribute('data-state', 'open');
@@ -55,13 +55,11 @@ describe("UploadWidgetHeader", () => {
         const user = userEvent.setup();
         renderWithCollapsible();
 
-        const toggleButton = screen.getByRole("button", { name: /toggle upload widget/i });
+        const toggleButton = screen.getByRole("button", {name: /toggle upload widget/i});
 
-        // Simula navegação por Tab
         await user.tab();
         expect(toggleButton).toHaveFocus();
 
-        // Simula Enter
         await user.keyboard('{Enter}');
         expect(toggleButton).toBeEnabled();
     });
