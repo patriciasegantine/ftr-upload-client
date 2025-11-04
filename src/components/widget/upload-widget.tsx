@@ -11,6 +11,8 @@ export function UploadWidget() {
     const contentRef = useRef<HTMLDivElement>(null);
     const [contentHeight, setContentHeight] = useState(0);
 
+    const isThereAnyPendedUpload = true;
+
     useEffect(() => {
         if (contentRef.current) {
             setContentHeight(contentRef.current.scrollHeight);
@@ -18,12 +20,12 @@ export function UploadWidget() {
     }, [isWidgetOpen]);
 
     return (
-        <Collapsible.Root onOpenChange={() => toggleWidgetOpen()}
-        >
+        <Collapsible.Root onOpenChange={() => toggleWidgetOpen()} asChild>
             <motion.div
                 className="bg-zinc-900 overflow-hidden w-[460px] rounded-xl shadow-shape"
                 role="region"
                 aria-label="File upload widget"
+                data-progress={isThereAnyPendedUpload}
                 animate={isWidgetOpen ? "open" : "closed"}
                 variants={{
                     open: {

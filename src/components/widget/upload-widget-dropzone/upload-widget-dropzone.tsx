@@ -1,6 +1,7 @@
 import {useDropzone} from "react-dropzone";
 import {dropzoneVariants} from "./upload-widget-dropzone.styles";
 import {CircularProgressBar} from "../../ui/circular-progress-bar/circular-progress-bar.tsx";
+import {motion} from "motion/react";
 
 export function UploadWidgetDropzone() {
     const isThereAnyPendedUpload = true;
@@ -20,7 +21,12 @@ export function UploadWidgetDropzone() {
     const styles = dropzoneVariants({isDragActive});
 
     return (
-        <div className={styles.container()}>
+        <motion.div
+            className={styles.container()}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5, ease: "easeInOut"}}
+        >
             <div
                 className={styles.dropzone()}
                 role="button"
@@ -71,6 +77,6 @@ export function UploadWidgetDropzone() {
             >
                 Only PNG and JPG files are supported.
             </span>
-        </div>
+        </motion.div>
     );
 }

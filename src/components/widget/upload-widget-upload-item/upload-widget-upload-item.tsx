@@ -3,6 +3,7 @@ import {Download, ImageUp, Link2, RefreshCcw, X} from "lucide-react";
 import {Button} from "../../ui/button.tsx";
 import {uploadItemVariantsStyles} from "./uploadItemVariants.styles.ts";
 import type {UploadStatus} from "../../../@types/updload-items.ts";
+import {motion} from "motion/react";
 
 interface UploadWidgetUploadItemProps {
     filename?: string;
@@ -28,11 +29,14 @@ export function UploadWidgetUploadItem({
     // const hasError = status === "error";
 
     return (
-        <article
+        <motion.article
             className={styles.container()}
             role="region"
             aria-label={`Upload item: ${filename}`}
             aria-busy={isUploading}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5, ease: "easeInOut"}}
         >
             <div className={styles.header()}>
                 <div className={styles.titleWrapper()}>
@@ -123,6 +127,6 @@ export function UploadWidgetUploadItem({
                     <X className="size-4" strokeWidth={1.5} aria-hidden="true"/>
                 </Button>
             </div>
-        </article>
+        </motion.article>
     );
 }
