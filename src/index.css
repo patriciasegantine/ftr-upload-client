@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@property --border-angle {
+    inherits: false;
+    initial-value: 0deg;
+    syntax: "<angle>";
+}
+
 @theme {
     --font-display: "Inter", "sans-serif";
 
@@ -9,4 +15,24 @@
     --shadow-shape-content: 0px 0px 0px 1px rgba(0, 0, 0, 0.25), inset 0px 1px 0px rgba(255, 255, 255, 0.02), inset 0px 0px 0px 1px rgba(255, 255, 255, 0.02);
 
     --text-xs: 0.875rem;
+
+    --animate-border: border 2s linear infinite;
+
+    @keyframes border {
+        to {
+            --border-angle: 360deg;
+        }
+    }
+}
+
+.upload-widget-animated-border {
+    background: linear-gradient(45deg, #09090B, theme(colors.zinc.900) 50%, #09090B) padding-box,
+    conic-gradient(
+            from var(--border-angle),
+            theme(colors.zinc.700 / 0.48) 80%,
+            theme(colors.indigo.500) 86%,
+            theme(colors.indigo.300) 90%,
+            theme(colors.indigo.500) 94%,
+            theme(colors.zinc.600 / 0.48)
+    ) border-box;
 }

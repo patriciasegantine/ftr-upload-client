@@ -1,10 +1,11 @@
-import {UploadWidgetHeader} from "./upload-widget-header/upload-widget-header.tsx";
-import {UploadWidgetUploadList} from "./upload-widget-upload-list/upload-widget-upload-list.tsx";
-import {Divider} from "../ui/divider.tsx";
+import {UploadWidgetHeader} from "../upload-widget-header/upload-widget-header.tsx";
+import {UploadWidgetUploadList} from "../upload-widget-upload-list/upload-widget-upload-list.tsx";
+import {Divider} from "../../ui/divider.tsx";
 import * as Collapsible from "@radix-ui/react-collapsible";
-import {UploadWidgetDropzone} from "./upload-widget-dropzone/upload-widget-dropzone.tsx";
+import {UploadWidgetDropzone} from "../upload-widget-dropzone/upload-widget-dropzone.tsx";
 import {motion, useCycle} from "motion/react";
 import {useEffect, useRef, useState} from "react";
+import {getUploadWidgetHeight, uploadWidgetAnimationVariants, uploadWidgetStyles} from "./upload-widget.styles.ts";
 
 export function UploadWidget() {
     const [isWidgetOpen, toggleWidgetOpen] = useCycle(false, true);
@@ -12,6 +13,12 @@ export function UploadWidget() {
     const [contentHeight, setContentHeight] = useState(0);
 
     const isThereAnyPendedUpload = true;
+
+    const styles = uploadWidgetStyles({
+        state: isWidgetOpen ? "open" : "closed",
+        hasProgress: isThereAnyPendedUpload,
+    });
+
 
     useEffect(() => {
         if (contentRef.current) {
@@ -22,27 +29,19 @@ export function UploadWidget() {
     return (
         <Collapsible.Root onOpenChange={() => toggleWidgetOpen()} asChild>
             <motion.div
-                className="bg-zinc-900 overflow-hidden w-[460px] rounded-xl shadow-shape"
+                className={styles.container()}
                 role="region"
                 aria-label="File upload widget"
                 data-progress={isThereAnyPendedUpload}
                 animate={isWidgetOpen ? "open" : "closed"}
                 variants={{
                     open: {
-                        width: 460,
-                        height: contentHeight + 60,
-                        transition: {
-                            duration: 0.3,
-                            ease: "easeInOut",
-                        },
+                        ...uploadWidgetAnimationVariants.open,
+                        ...getUploadWidgetHeight(contentHeight, true),
                     },
                     closed: {
-                        width: "max-content",
-                        height: 60,
-                        transition: {
-                            duration: 0.3,
-                            ease: "easeInOut",
-                        },
+                        ...uploadWidgetAnimationVariants.closed,
+                        ...getUploadWidgetHeight(contentHeight, false),
                     },
                 }}
             >
