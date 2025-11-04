@@ -6,7 +6,7 @@ import {UploadWidgetTitle} from "../upload-widget-title.tsx";
 export function UploadWidgetHeader() {
     return (
         <header
-            className="w-full p-4 bg-white/3 border-zinc-800 border-b flex items-center justify-between"
+            className="w-full p-4 bg-white/3 border-zinc-800 border-b flex gap-5 items-center justify-between"
             role="banner"
         >
             <UploadWidgetTitle/>
