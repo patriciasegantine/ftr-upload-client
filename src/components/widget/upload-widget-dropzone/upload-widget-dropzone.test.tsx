@@ -47,15 +47,14 @@ describe("UploadWidgetDropzone", () => {
         expect(dragText).toBeInTheDocument();
     });
 
-    it("should show default state with instructions", () => {
+    it("should show uploading state with progress", () => {
         const mockState = createMockDropzoneState();
 
         vi.mocked(useDropzone).mockReturnValue(mockState);
 
         render(<UploadWidgetDropzone/>);
 
-        expect(screen.getByText(/drop your files here or/i)).toBeInTheDocument();
-        expect(screen.getByText(/click to open picker/i)).toBeInTheDocument();
+        expect(screen.getByText(/uploading \d+ files?\.\.\./i)).toBeInTheDocument();
         expect(screen.getByText(/only png and jpg files are supported/i)).toBeInTheDocument();
     });
 });

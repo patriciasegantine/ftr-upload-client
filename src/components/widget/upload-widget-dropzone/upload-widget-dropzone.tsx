@@ -1,7 +1,12 @@
 import {useDropzone} from "react-dropzone";
 import {dropzoneVariants} from "./upload-widget-dropzone.styles";
+import {CircularProgressBar} from "../../ui/circular-progress-bar/circular-progress-bar.tsx";
+import {motion} from "motion/react";
 
 export function UploadWidgetDropzone() {
+    const isThereAnyPendedUpload = true;
+    const uploadGlobalPercentage = 66;
+
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
         multiple: true,
         accept: {
@@ -16,7 +21,12 @@ export function UploadWidgetDropzone() {
     const styles = dropzoneVariants({isDragActive});
 
     return (
-        <div className={styles.container()}>
+        <motion.div
+            className={styles.container()}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5, ease: "easeInOut"}}
+        >
             <div
                 className={styles.dropzone()}
                 role="button"
@@ -32,6 +42,22 @@ export function UploadWidgetDropzone() {
                     aria-label="File upload input for PNG and JPG images"
                     {...getInputProps()}
                 />
+                {
+                    isThereAnyPendedUpload ? (
+                        <div className="flex flex-col gap-2.5 items-center">
+                            <CircularProgressBar
+                                progress={uploadGlobalPercentage}
+                                size={56}
+                                strokeWidth={4}
+                            />
+                            <span className="text-xs">Uploading 2 files...</span>
+                        </div>
+                    ) : (
+                        <>
+                            <span className={styles.text()}>Drop your files here or</span>
+                            <span className={styles.textLink()}>click to open picker</span>
+                        </>
+                    )}
 
                 {isDragActive ? (
                     <span className={styles.text()}>
@@ -39,8 +65,7 @@ export function UploadWidgetDropzone() {
                     </span>
                 ) : (
                     <>
-                        <span className={styles.text()}>Drop your files here or</span>
-                        <span className={styles.textLink()}>click to open picker</span>
+
                     </>
                 )}
             </div>
@@ -52,6 +77,6 @@ export function UploadWidgetDropzone() {
             >
                 Only PNG and JPG files are supported.
             </span>
-        </div>
+        </motion.div>
     );
 }
