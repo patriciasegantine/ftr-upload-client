@@ -1,18 +1,29 @@
 import {create} from "zustand";
-import type {Upload} from "../@types/updload-items.ts";
 import {enableMapSet} from "immer";
 import {immer} from "zustand/middleware/immer";
 import {uploadFileToStorage} from "../http/upload-file-to-storage.ts";
+import {UploadStatus} from "../@types/upload-status.ts";
 
 type UploadState = {
     uploads: Map<string, Upload>;
     addUploads: (files: File[]) => void;
+    cancelUpload: (uploadId: string) => void;
 };
+
+export interface Upload {
+    name: string;
+    file: File;
+    abortController: AbortController;
+    status?: UploadStatus;
+    compressedSize?: string;
+    compressionRate?: number;
+}
 
 enableMapSet();
 
 export const useUploads = create<UploadState, [["zustand/immer", never]]>(
     immer((set, get) => {
+
         async function processUpload(uploadId: string) {
             const upload = get().uploads.get(uploadId);
 
@@ -20,20 +31,41 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                 return;
             }
 
-            await uploadFileToStorage({file: upload.file});
+            await uploadFileToStorage(
+                {file: upload.file},
+                {signal: upload.abortController?.signal}
+            );
+        }
+
+        function cancelUpload(uploadId: string) {
+            const upload = get().uploads.get(uploadId);
+            if (!upload) {
+                return;
+            }
+
+            upload.abortController?.abort()
+
+            set((state) => {
+                state.uploads.set(uploadId, {
+                    ...upload,
+                    status: UploadStatus.CANCELED,
+                });
+            });
+
         }
 
         function addUploads(files: File[]) {
             for (const file of files) {
                 const uploadId = crypto.randomUUID();
+                const abortController = new AbortController();
 
                 const upload: Upload = {
                     name: file.name,
-                    status: "uploading",
-                    progress: 0,
+                    file,
+                    abortController,
+                    status: UploadStatus.PROGRESS,
                     compressionRate: 0,
                     compressedSize: "0",
-                    file,
                 };
 
                 set((state) => {
@@ -47,6 +79,7 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
         return {
             uploads: new Map(),
             addUploads,
+            cancelUpload
         };
     })
 );
