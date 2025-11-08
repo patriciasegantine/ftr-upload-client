@@ -1,8 +1,18 @@
 import {create} from "zustand";
 import {enableMapSet} from "immer";
 import {immer} from "zustand/middleware/immer";
-import {uploadFileToStorage} from "../http/upload-file-to-storage.ts";
+import {uploadFileToStorage} from "../http/upload-file-to-storage";
+import {CanceledError} from "axios";
 import {UploadStatus} from "../@types/upload-status.ts";
+
+export type Upload = {
+    name: string;
+    file: File;
+    abortController: AbortController;
+    status: "progress" | "success" | "error" | "canceled";
+    originalSizeInBytes: number;
+    uploadSizeInBytes: number;
+};
 
 type UploadState = {
     uploads: Map<string, Upload>;
@@ -10,20 +20,10 @@ type UploadState = {
     cancelUpload: (uploadId: string) => void;
 };
 
-export interface Upload {
-    name: string;
-    file: File;
-    abortController: AbortController;
-    status?: UploadStatus;
-    compressedSize?: string;
-    compressionRate?: number;
-}
-
 enableMapSet();
 
 export const useUploads = create<UploadState, [["zustand/immer", never]]>(
     immer((set, get) => {
-
         async function processUpload(uploadId: string) {
             const upload = get().uploads.get(uploadId);
 
@@ -33,18 +33,37 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
 
             try {
                 await uploadFileToStorage(
-                    {file: upload.file},
-                    {signal: upload.abortController?.signal}
+                    {
+                        file: upload.file,
+                        onProgress(sizeInBytes) {
+                            set((state) => {
+                                state.uploads.set(uploadId, {
+                                    ...upload,
+                                    uploadSizeInBytes: sizeInBytes,
+                                });
+                            });
+                        },
+                    },
+                    {signal: upload.abortController.signal}
                 );
 
                 set((state) => {
                     state.uploads.set(uploadId, {
                         ...upload,
-                        status: UploadStatus.SUCCESS,
+                        status: "success",
                     });
                 });
-            } catch (error) {
-                console.error("Error uploading file:", error);
+            } catch (err) {
+                if (err instanceof CanceledError) {
+                    set((state) => {
+                        state.uploads.set(uploadId, {
+                            ...upload,
+                            status: UploadStatus.CANCELED,
+                        });
+                    });
+
+                    return;
+                }
 
                 set((state) => {
                     state.uploads.set(uploadId, {
@@ -57,11 +76,12 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
 
         function cancelUpload(uploadId: string) {
             const upload = get().uploads.get(uploadId);
+
             if (!upload) {
                 return;
             }
 
-            upload.abortController?.abort()
+            upload.abortController.abort();
 
             set((state) => {
                 state.uploads.set(uploadId, {
@@ -69,7 +89,6 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                     status: UploadStatus.CANCELED,
                 });
             });
-
         }
 
         function addUploads(files: File[]) {
@@ -82,8 +101,8 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                     file,
                     abortController,
                     status: UploadStatus.PROGRESS,
-                    compressionRate: 0,
-                    compressedSize: "0",
+                    originalSizeInBytes: file.size,
+                    uploadSizeInBytes: 0,
                 };
 
                 set((state) => {
@@ -97,8 +116,7 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
         return {
             uploads: new Map(),
             addUploads,
-            cancelUpload
+            cancelUpload,
         };
     })
 );
-
