@@ -34,7 +34,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
         },
         [UploadStatus.SUCCESS]: {
             label: "Upload completed successfully",
-            display: null,
+            display: <span className="text-green-400 ml-1">100%</span>,
         },
         [UploadStatus.ERROR]: {
             label: "Upload failed",
@@ -53,7 +53,6 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
     const currentStatus = status && status in statusMap
         ? statusMap[status]
         : statusMap.default;
-
 
     return (
         <motion.article
@@ -129,7 +128,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
 
                 <Button
                     size="icon"
-                    disabled={status === UploadStatus.SUCCESS}
+                    disabled={status !== UploadStatus.SUCCESS}
                     aria-label={`Copy URL for ${name}`}
                     title="Copy remote URL"
                 >
@@ -138,7 +137,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
 
                 <Button
                     size="icon"
-                    disabled={status !== UploadStatus.ERROR}
+                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(upload.status!)}
                     aria-label={`Retry upload for ${name}`}
                     title="Retry upload"
                 >
@@ -150,8 +149,14 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
                     aria-label={`Cancel upload for ${name}`}
                     title="Cancel upload"
                     onClick={() => cancelUpload(uploadId)}
+                    aria-disabled={status !== UploadStatus.PROGRESS}
+                    disabled={status !== UploadStatus.PROGRESS}
                 >
-                    <X className="size-4" strokeWidth={1.5} aria-hidden="true"/>
+                    <X
+                        className="size-4"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                    />
                 </Button>
             </div>
         </motion.article>

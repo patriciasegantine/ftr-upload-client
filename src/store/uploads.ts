@@ -31,10 +31,28 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                 return;
             }
 
-            await uploadFileToStorage(
-                {file: upload.file},
-                {signal: upload.abortController?.signal}
-            );
+            try {
+                await uploadFileToStorage(
+                    {file: upload.file},
+                    {signal: upload.abortController?.signal}
+                );
+
+                set((state) => {
+                    state.uploads.set(uploadId, {
+                        ...upload,
+                        status: UploadStatus.SUCCESS,
+                    });
+                });
+            } catch (error) {
+                console.error("Error uploading file:", error);
+
+                set((state) => {
+                    state.uploads.set(uploadId, {
+                        ...upload,
+                        status: UploadStatus.ERROR,
+                    });
+                });
+            }
         }
 
         function cancelUpload(uploadId: string) {

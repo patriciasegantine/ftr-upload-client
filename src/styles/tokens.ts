@@ -1,6 +1,6 @@
 /**
  * Design Tokens
- * 
+ *
  * Centralized design values for consistency across the application.
  * These are visual styles, not accessibility requirements.
  */
@@ -26,12 +26,12 @@ export const transitions = {
 
 /**
  * Interactive state colors
- * Note: Uses violet-500 to match focus ring color for consistency
+ * Note: Uses indigo-500 to match focus ring color for consistency
  */
 export const interactionColors = {
-    primary: "violet-500",
-    primaryLight: "violet-400",
-    primaryBg: "bg-violet-500/10",
-    primaryBorder: "border-violet-500",
-    primaryText: "text-violet-500",
+    primary: "indigo-500",
+    primaryLight: "indigo-400",
+    primaryBg: "bg-indigo-500/10",
+    primaryBorder: "border-indigo-500",
+    primaryText: "text-indigo-500",
 } as const;
