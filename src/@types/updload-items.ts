@@ -1,8 +1,8 @@
 export type UploadStatus = "uploading" | "completed" | "error";
 
-export interface UploadItems {
-    filename?: string;
-    originalSize?: string;
+export interface Upload {
+    name: string;
+    file: File;
     compressedSize?: string;
     compressionRate?: number;
     progress?: number;

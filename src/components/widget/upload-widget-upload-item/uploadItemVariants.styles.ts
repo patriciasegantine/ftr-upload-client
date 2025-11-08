@@ -13,7 +13,7 @@ export const uploadItemVariantsStyles = tv({
         header: "flex flex-col gap-1",
         titleWrapper: "text-xs font-medium flex items-center gap-1",
         icon: ["size-3", textColors.onDark],
-        filename: textColors.onDark,
+        name: [textColors.onDark, "truncate", "max-w-[25ch]"],
         metadata: "text-[0.750rem] text-zinc-400 flex gap-1.5 items-center",
         separator: "size-1 rounded-full bg-zinc-700",
         lineThrough: "line-through",

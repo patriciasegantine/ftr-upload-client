@@ -1,9 +1,5 @@
 import {create} from "zustand";
-
-export type Upload = {
-    name: string;
-    file: File;
-};
+import type {Upload} from "../@types/updload-items.ts";
 
 type UploadState = {
     uploads: Map<string, Upload>;
@@ -12,7 +8,27 @@ type UploadState = {
 
 export const useUploads = create<UploadState>((set, get) => {
     function addUploads(files: File[]) {
+
         console.log(files)
+
+        for (const file of files) {
+            const uploadId = crypto.randomUUID();
+
+            const upload: Upload = {
+                name: file.name,
+                status: "uploading",
+                progress: 0,
+                compressionRate: 0,
+                compressedSize: "0",
+                file,
+            };
+
+            set((state) => {
+                return {
+                    uploads: state.uploads.set(uploadId, upload),
+                };
+            });
+        }
     }
 
     return {
