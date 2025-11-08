@@ -2,7 +2,7 @@ import {UploadWidgetUploadItem} from "../upload-widget-upload-item/upload-widget
 import {useUploads} from "../../../store/uploads.ts";
 
 export function UploadWidgetUploadList() {
-    const {uploads} = useUploads();
+    const uploads = useUploads((store) => store.uploads);
 
     const isUploadListEmpty = uploads.size === 0;
     const totalUploads = !isUploadListEmpty ? uploads.size : 0;

@@ -4,6 +4,7 @@ import {Button} from "../../ui/button.tsx";
 import {uploadItemVariantsStyles} from "./uploadItemVariants.styles.ts";
 import {motion} from "motion/react";
 import type {Upload} from "../../../@types/updload-items.ts";
+import {formatBytes} from "../../../utils/format-bytes.ts";
 
 interface UploadWidgetUploadItemProps {
     upload: Upload;
@@ -40,10 +41,11 @@ export function UploadWidgetUploadItem({upload}: UploadWidgetUploadItemProps) {
 
                 <div
                     className={styles.metadata()}
-                    aria-label={`File size: original ${upload?.file.size}, compressed to ${upload?.compressedSize}, ${upload?.compressionRate}% reduction, ${upload?.progress}% uploaded`}
+                    aria-label={`File size: original ${formatBytes(upload?.file.size)}, compressed to ${upload?.compressedSize}, ${upload?.compressionRate}% reduction, ${upload?.progress}% uploaded`}
                 >
-                    <span className={styles.lineThrough()} aria-label={`Original size: ${upload?.file.size}`}>
-                        {upload?.file.size}
+                    <span className={styles.lineThrough()}
+                          aria-label={`Original size: ${formatBytes(upload?.file.size)}`}>
+                        {formatBytes(upload?.file.size)}
                     </span>
                     <div className={styles.separator()} aria-hidden="true"/>
                     <span aria-label={`Compressed size: ${upload?.compressedSize}`}>
