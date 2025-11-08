@@ -5,10 +5,21 @@ import {render, screen} from "@testing-library/react";
 import {UploadWidgetDropzone} from "./upload-widget-dropzone";
 import type {DropzoneInputProps, DropzoneRootProps, DropzoneState} from "react-dropzone";
 import {useDropzone} from "react-dropzone";
+import type {Upload} from "../../../store/uploads.ts";
 
 vi.mock("react-dropzone", () => ({
     useDropzone: vi.fn(),
 }));
+
+vi.mock("../../../store/uploads.ts", () => ({
+    useUploads: vi.fn(),
+}));
+
+type MockUploadsStore = {
+    addUploads: ReturnType<typeof vi.fn>;
+    uploads?: Map<string, Upload>;
+    cancelUpload?: ReturnType<typeof vi.fn>;
+};
 
 const createMockDropzoneState = (overrides?: Partial<DropzoneState>): DropzoneState =>
     ({
@@ -19,8 +30,13 @@ const createMockDropzoneState = (overrides?: Partial<DropzoneState>): DropzoneSt
     } as DropzoneState);
 
 describe("UploadWidgetDropzone", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.clearAllMocks();
+
+        const {useUploads} = await import("../../../store/uploads.ts");
+        vi.mocked(useUploads).mockReturnValue({
+            addUploads: vi.fn(),
+        } as MockUploadsStore);
     });
 
     it("should render the dropzone", () => {
@@ -47,14 +63,15 @@ describe("UploadWidgetDropzone", () => {
         expect(dragText).toBeInTheDocument();
     });
 
-    it("should show uploading state with progress", () => {
+    it("should show default state with instructions when not uploading", () => {
         const mockState = createMockDropzoneState();
 
         vi.mocked(useDropzone).mockReturnValue(mockState);
 
         render(<UploadWidgetDropzone/>);
 
-        expect(screen.getByText(/uploading \d+ files?\.\.\./i)).toBeInTheDocument();
+        expect(screen.getByText(/drop your files here or/i)).toBeInTheDocument();
+        expect(screen.getByText(/click to open picker/i)).toBeInTheDocument();
         expect(screen.getByText(/only png and jpg files are supported/i)).toBeInTheDocument();
     });
 });
