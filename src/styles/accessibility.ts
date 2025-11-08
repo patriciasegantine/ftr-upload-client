@@ -14,7 +14,7 @@
 export const focusRing = [
     "focus:outline-none",
     "focus:ring-1",
-    "focus:ring-violet-500",
+    "focus:ring-indigo-500",
     "focus:ring-offset-1",
     "focus:ring-offset-zinc-950",
 ] as const;
@@ -28,7 +28,7 @@ export const focusRing = [
 export const focusRingLarge = [
     "focus-within:outline-none",
     "focus-within:ring-2",
-    "focus-within:ring-violet-500",
+    "focus-within:ring-indigo-500",
     "focus-within:ring-offset-2",
     "focus-within:ring-offset-zinc-900",
 ] as const;
@@ -66,6 +66,6 @@ export const srOnly = [
 export const keyboardFocus = [
     "focus-visible:outline-none",
     "focus-visible:ring-2",
-    "focus-visible:ring-violet-500",
+    "focus-visible:ring-indigo-500",
     "focus-visible:ring-offset-2",
 ] as const;

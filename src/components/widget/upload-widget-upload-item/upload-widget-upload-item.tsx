@@ -2,100 +2,125 @@ import * as Progress from "@radix-ui/react-progress";
 import {Download, ImageUp, Link2, RefreshCcw, X} from "lucide-react";
 import {Button} from "../../ui/button.tsx";
 import {uploadItemVariantsStyles} from "./uploadItemVariants.styles.ts";
-import type {UploadStatus} from "../../../@types/updload-items.ts";
 import {motion} from "motion/react";
+import {UploadStatus} from "../../../@types/upload-status.ts";
+import {formatBytes} from "../../../utils/format-bytes.ts";
+import {type Upload, useUploads} from "../../../store/uploads.ts";
+import * as React from "react";
 
 interface UploadWidgetUploadItemProps {
-    filename?: string;
-    originalSize?: string;
-    compressedSize?: string;
-    compressionRate?: number;
-    progress?: number;
-    status?: UploadStatus
+    upload: Upload;
+    uploadId: string;
 }
 
-export function UploadWidgetUploadItem({
-                                           filename,
-                                           originalSize,
-                                           compressedSize,
-                                           compressionRate,
-                                           progress,
-                                           status,
-                                       }: UploadWidgetUploadItemProps) {
-    const styles = uploadItemVariantsStyles();
+interface StatusInfo {
+    label: string;
+    display: React.ReactNode;
+    busy?: boolean;
+}
 
-    const isUploading = status === "uploading";
-    const isCompleted = status === "completed";
-    // const hasError = status === "error";
+export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadItemProps) {
+    const styles = uploadItemVariantsStyles();
+    const cancelUpload = useUploads((store) => store.cancelUpload);
+
+    const {name, file, compressedSize, compressionRate, status} = upload;
+    const uploadProgress = 10;
+
+    const statusMap: Record<string, StatusInfo> = {
+        [UploadStatus.PROGRESS]: {
+            label: `${uploadProgress}% uploaded`,
+            display: <span>{uploadProgress}%</span>,
+            busy: true,
+        },
+        [UploadStatus.SUCCESS]: {
+            label: "Upload completed successfully",
+            display: <span className="text-green-400 ml-1">100%</span>,
+        },
+        [UploadStatus.ERROR]: {
+            label: "Upload failed",
+            display: <span role="alert" className="text-red-400 ml-1">Error</span>,
+        },
+        [UploadStatus.CANCELED]: {
+            label: "Upload canceled",
+            display: <span role="alert" className="text-amber-400 ml-1">Canceled</span>,
+        },
+        default: {
+            label: "Ready",
+            display: null,
+        },
+    };
+
+    const currentStatus = status && status in statusMap
+        ? statusMap[status]
+        : statusMap.default;
 
     return (
         <motion.article
             className={styles.container()}
             role="region"
-            aria-label={`Upload item: ${filename}`}
-            aria-busy={isUploading}
+            aria-label={`Upload item: ${name}`}
+            aria-busy={!!currentStatus.busy}
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.5, ease: "easeInOut"}}
         >
             <div className={styles.header()}>
                 <div className={styles.titleWrapper()}>
-                    <ImageUp
-                        className={styles.icon()}
-                        strokeWidth={1.5}
-                        aria-hidden="true"
-                    />
-                    <span className={styles.filename()}>
-                        {filename}
-                    </span>
+                    <ImageUp className={styles.icon()} strokeWidth={1.5} aria-hidden="true"/>
+                    <span className={styles.name()} title={name}>{name}</span>
                 </div>
 
                 <div
                     className={styles.metadata()}
-                    aria-label={`File size: original ${originalSize}, compressed to ${compressedSize}, ${compressionRate}% reduction, ${progress}% uploaded`}
+                    aria-label={`File size: original ${formatBytes(file.size)}, compressed to ${compressedSize}, ${compressionRate}% reduction, ${currentStatus.label}`}
                 >
-                    <span className={styles.lineThrough()} aria-label={`Original size: ${originalSize}`}>
-                        {originalSize}
+                    <span className={styles.lineThrough()} aria-label={`Original size: ${formatBytes(file.size)}`}>
+                        {formatBytes(file.size)}
                     </span>
+
                     <div className={styles.separator()} aria-hidden="true"/>
                     <span aria-label={`Compressed size: ${compressedSize}`}>
                         {compressedSize}
-                        <span className={styles.highlight()} aria-label={`${compressionRate}% reduction`}>
-                            -{compressionRate}%
+                        <span className={styles.highlight()}
+                              aria-label={`${compressionRate}% reduction`}> -{compressionRate}%
                         </span>
                     </span>
+
                     <div className={styles.separator()} aria-hidden="true"/>
-                    <span aria-label={`Upload progress: ${progress}%`}>
-                        {progress}%
+
+                    <span aria-label={`Upload status: ${currentStatus.label}`}>
+                        {currentStatus.display}
                     </span>
                 </div>
             </div>
 
             <Progress.Root
-                className={styles.progressRoot()}
-                value={progress}
+                className="bg-zinc-800 rounded-full h-1 overflow-hidden group"
+                value={uploadProgress}
                 max={100}
-                aria-label={`Upload progress for ${filename}`}
+                aria-label={`Upload progress for ${upload?.name}`}
                 aria-valuemin={0}
                 aria-valuemax={100}
-                aria-valuenow={progress}
-                aria-valuetext={`${progress}% uploaded`}
+                aria-valuenow={uploadProgress}
+                aria-valuetext={`${uploadProgress}% uploaded`}
+                data-status={upload.status}
             >
                 <Progress.Indicator
-                    className={styles.progressIndicator()}
-                    style={{width: `${progress}%`}}
+                    className={styles.progressIndicator({
+                        status: upload.status
+                    })}
+                    data-status={upload.status}
+                    style={{
+                        width: `${upload.status !== UploadStatus.PROGRESS ? `${uploadProgress}%` : 100}%`
+                    }}
                 />
             </Progress.Root>
 
-            <div
-                className={styles.actions()}
-                role="group"
-                aria-label="File actions"
-            >
+            <div className={styles.actions()} role="group" aria-label="File actions">
                 <Button
                     size="icon"
-                    disabled={!isCompleted}
-                    aria-label={`Download compressed ${filename}`}
+                    disabled={status !== UploadStatus.SUCCESS}
+                    aria-label={`Download compressed ${name}`}
                     title="Download compressed image"
                 >
                     <Download className="size-4" strokeWidth={1.5} aria-hidden="true"/>
@@ -103,8 +128,8 @@ export function UploadWidgetUploadItem({
 
                 <Button
                     size="icon"
-                    disabled={!isCompleted}
-                    aria-label={`Copy URL for ${filename}`}
+                    disabled={status !== UploadStatus.SUCCESS}
+                    aria-label={`Copy URL for ${name}`}
                     title="Copy remote URL"
                 >
                     <Link2 className="size-4" strokeWidth={1.5} aria-hidden="true"/>
@@ -112,8 +137,8 @@ export function UploadWidgetUploadItem({
 
                 <Button
                     size="icon"
-                    disabled={isUploading}
-                    aria-label={`Retry upload for ${filename}`}
+                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(upload.status!)}
+                    aria-label={`Retry upload for ${name}`}
                     title="Retry upload"
                 >
                     <RefreshCcw className="size-4" strokeWidth={1.5} aria-hidden="true"/>
@@ -121,10 +146,17 @@ export function UploadWidgetUploadItem({
 
                 <Button
                     size="icon"
-                    aria-label={`Cancel upload for ${filename}`}
+                    aria-label={`Cancel upload for ${name}`}
                     title="Cancel upload"
+                    onClick={() => cancelUpload(uploadId)}
+                    aria-disabled={status !== UploadStatus.PROGRESS}
+                    disabled={status !== UploadStatus.PROGRESS}
                 >
-                    <X className="size-4" strokeWidth={1.5} aria-hidden="true"/>
+                    <X
+                        className="size-4"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                    />
                 </Button>
             </div>
         </motion.article>

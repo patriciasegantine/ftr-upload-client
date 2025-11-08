@@ -6,9 +6,11 @@ import {UploadWidgetDropzone} from "../upload-widget-dropzone/upload-widget-drop
 import {motion, useCycle} from "motion/react";
 import {useEffect, useRef, useState} from "react";
 import {getUploadWidgetHeight, uploadWidgetAnimationVariants, uploadWidgetStyles} from "./upload-widget.styles.ts";
+import {useUploads} from "../../../store/uploads.ts";
 
 export function UploadWidget() {
-    const [isWidgetOpen, toggleWidgetOpen] = useCycle(false, true);
+    const uploads = useUploads((store) => store.uploads);
+    const [isWidgetOpen, toggleWidgetOpen] = useCycle(true, false);
     const contentRef = useRef<HTMLDivElement>(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -24,10 +26,10 @@ export function UploadWidget() {
         if (contentRef.current) {
             setContentHeight(contentRef.current.scrollHeight);
         }
-    }, [isWidgetOpen]);
-
+    }, [isWidgetOpen, uploads.size]);
+    
     return (
-        <Collapsible.Root onOpenChange={() => toggleWidgetOpen()} asChild>
+        <Collapsible.Root open={isWidgetOpen} onOpenChange={() => toggleWidgetOpen()} asChild>
             <motion.div
                 className={styles.container()}
                 role="region"
