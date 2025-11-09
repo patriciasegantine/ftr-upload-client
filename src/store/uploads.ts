@@ -15,7 +15,7 @@ export type Upload = {
     uploadSizeInBytes: number;
 };
 
-type UploadState = {
+export type UploadState = {
     uploads: Map<string, Upload>;
     addUploads: (files: File[]) => void;
     cancelUpload: (uploadId: string) => void;
