@@ -23,14 +23,15 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
     const styles = uploadItemVariantsStyles();
     const cancelUpload = useUploads((store) => store.cancelUpload);
 
-    const {name, status, originalSizeInBytes} = upload;
-
-    const compressedSize = 10
+    const {name, status, originalSizeInBytes, compressedSizeInBytes,} = upload;
     const compressionRate = 10
 
-    const uploadProgress = upload.originalSizeInBytes > 0
-        ? Math.round((upload.uploadSizeInBytes * 100) / upload.originalSizeInBytes)
-        : 0;
+    const uploadProgress = Math.min(
+        upload.compressedSizeInBytes
+            ? Math.round((upload.uploadSizeInBytes * 100) / upload.originalSizeInBytes)
+            : 0,
+        100
+    )
 
     const statusMap: Record<string, StatusInfo> = {
         [UploadStatus.PROGRESS]: {
@@ -79,7 +80,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
 
                 <div
                     className={styles.metadata()}
-                    aria-label={`File size: original ${formatBytes(originalSizeInBytes)}, compressed to ${compressedSize}, ${compressionRate}% reduction, ${currentStatus.label}`}
+                    aria-label={`File size: original ${formatBytes(originalSizeInBytes)}, compressed to ${compressedSizeInBytes}, ${compressionRate}% reduction, ${currentStatus.label}`}
                 >
                     <span className={styles.lineThrough()}
                           aria-label={`Original size: ${formatBytes(originalSizeInBytes)}`}>
@@ -87,8 +88,8 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
                     </span>
 
                     <div className={styles.separator()} aria-hidden="true"/>
-                    <span aria-label={`Compressed size: ${compressedSize}`}>
-                        {compressedSize}
+                    <span aria-label={`Compressed size: ${compressedSizeInBytes}`}>
+                        {compressedSizeInBytes}
                         <span className={styles.highlight()}
                               aria-label={`${compressionRate}% reduction`}> -{compressionRate}%
                         </span>
