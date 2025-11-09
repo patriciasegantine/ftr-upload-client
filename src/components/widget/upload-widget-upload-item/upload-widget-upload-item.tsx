@@ -4,9 +4,10 @@ import {Button} from "../../ui/button.tsx";
 import {uploadItemVariantsStyles} from "./uploadItemVariants.styles.ts";
 import {motion} from "motion/react";
 import {UploadStatus} from "../../../@types/upload-status.ts";
-import {formatBytes} from "../../../utils/format-bytes.ts";
 import {type Upload, useUploads} from "../../../store/uploads.ts";
 import * as React from "react";
+import {downloadFile} from "../../../utils/downloadFile.ts";
+import {formatBytes} from "../../../utils/format-bytes.ts";
 
 interface UploadWidgetUploadItemProps {
     upload: Upload;
@@ -23,8 +24,9 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
     const styles = uploadItemVariantsStyles();
     const cancelUpload = useUploads((store) => store.cancelUpload);
 
-    const {name, status, originalSizeInBytes, compressedSizeInBytes,} = upload;
-    const compressionRate = 10
+    const {name, status, originalSizeInBytes, compressedSizeInBytes, remoteUrl} = upload;
+
+    const compressionRate = compressedSizeInBytes && Math.round((originalSizeInBytes - compressedSizeInBytes) / originalSizeInBytes * 100);
 
     const uploadProgress = Math.min(
         upload.compressedSizeInBytes
@@ -88,11 +90,14 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
                     </span>
 
                     <div className={styles.separator()} aria-hidden="true"/>
-                    <span aria-label={`Compressed size: ${compressedSizeInBytes}`}>
-                        {compressedSizeInBytes}
-                        <span className={styles.highlight()}
-                              aria-label={`${compressionRate}% reduction`}> -{compressionRate}%
-                        </span>
+                    <span aria-label={`Compressed size: ${formatBytes(compressedSizeInBytes ?? 0)}`}>
+                        {formatBytes(compressedSizeInBytes ?? 0)}
+                        {
+                            compressedSizeInBytes &&
+                            <span className={styles.highlight()}
+                                  aria-label={`${compressionRate}% reduction`}> -{compressionRate}%
+                            </span>
+                        }
                     </span>
 
                     <div className={styles.separator()} aria-hidden="true"/>
@@ -126,27 +131,29 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
             <div className={styles.actions()} role="group" aria-label="File actions">
                 <Button
                     size="icon"
-                    disabled={status !== UploadStatus.SUCCESS}
                     aria-label={`Download compressed ${name}`}
                     title="Download compressed image"
+                    disabled={!remoteUrl}
+                    onClick={() => remoteUrl && downloadFile(remoteUrl, name)}
                 >
                     <Download className="size-4" strokeWidth={1.5} aria-hidden="true"/>
                 </Button>
 
                 <Button
                     size="icon"
-                    disabled={status !== UploadStatus.SUCCESS}
+                    onClick={() => remoteUrl && navigator.clipboard.writeText(remoteUrl)}
                     aria-label={`Copy URL for ${name}`}
                     title="Copy remote URL"
+                    disabled={!remoteUrl}
                 >
                     <Link2 className="size-4" strokeWidth={1.5} aria-hidden="true"/>
                 </Button>
 
                 <Button
                     size="icon"
-                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(status!)}
                     aria-label={`Retry upload for ${name}`}
                     title="Retry upload"
+                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(status!)}
                 >
                     <RefreshCcw className="size-4" strokeWidth={1.5} aria-hidden="true"/>
                 </Button>

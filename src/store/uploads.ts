@@ -15,6 +15,7 @@ export type Upload = {
     originalSizeInBytes: number;
     compressedSizeInBytes?: number;
     uploadSizeInBytes: number;
+    remoteUrl?: string;
 };
 
 
@@ -61,7 +62,7 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
 
                 updateUpload(uploadId, {compressedSizeInBytes: compressedFile.size});
 
-                await uploadFileToStorage(
+                const {url} = await uploadFileToStorage(
                     {
                         file: compressedFile,
                         onProgress(sizeInBytes) {
@@ -75,6 +76,7 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
 
                 updateUpload(uploadId, {
                     status: UploadStatus.SUCCESS,
+                    remoteUrl: url,
                 });
             } catch (err) {
                 if (err instanceof CanceledError) {
