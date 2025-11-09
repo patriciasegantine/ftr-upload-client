@@ -23,7 +23,8 @@ export const uploadItemVariantsStyles = tv({
             "bg-indigo-500 h-1",
             "group-data-[status=success]:bg-green-400",
             "group-data-[status=error]:bg-red-400",
-            "group-data-[status=canceled]:bg-amber-400"
+            "group-data-[status=canceled]:bg-amber-400",
+            "transition-all duration-500 ease-in-out",
         ],
         actions: "absolute top-2.5 right-2.5 flex items-center gap-1",
     },

@@ -6,7 +6,7 @@ import {UploadWidgetDropzone} from "../upload-widget-dropzone/upload-widget-drop
 import {motion, useCycle} from "motion/react";
 import {useEffect, useRef, useState} from "react";
 import {getUploadWidgetHeight, uploadWidgetAnimationVariants, uploadWidgetStyles} from "./upload-widget.styles.ts";
-import {useUploads} from "../../../store/uploads.ts";
+import {usePendingUploads, useUploads} from "../../../store/uploads.ts";
 
 export function UploadWidget() {
     const uploads = useUploads((store) => store.uploads);
@@ -14,11 +14,11 @@ export function UploadWidget() {
     const contentRef = useRef<HTMLDivElement>(null);
     const [contentHeight, setContentHeight] = useState(0);
 
-    const isThereAnyPendedUpload = true;
+    const {isThereAnyPendingUploads} = usePendingUploads()
 
     const styles = uploadWidgetStyles({
         state: isWidgetOpen ? "open" : "closed",
-        hasProgress: isThereAnyPendedUpload,
+        hasProgress: isThereAnyPendingUploads,
     });
 
 
@@ -27,14 +27,14 @@ export function UploadWidget() {
             setContentHeight(contentRef.current.scrollHeight);
         }
     }, [isWidgetOpen, uploads.size]);
-    
+
     return (
         <Collapsible.Root open={isWidgetOpen} onOpenChange={() => toggleWidgetOpen()} asChild>
             <motion.div
                 className={styles.container()}
                 role="region"
                 aria-label="File upload widget"
-                data-progress={isThereAnyPendedUpload}
+                data-progress={isThereAnyPendingUploads}
                 animate={isWidgetOpen ? "open" : "closed"}
                 variants={{
                     open: {

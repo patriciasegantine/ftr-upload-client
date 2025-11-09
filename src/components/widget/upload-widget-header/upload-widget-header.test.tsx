@@ -12,11 +12,10 @@ const renderWithCollapsible = () => {
 };
 
 describe("UploadWidgetHeader", () => {
-    it("renders the header with the correct title", () => {
+    it("renders the header with default title when not uploading", () => {
         renderWithCollapsible();
-        const titleElement = screen.getByRole("heading");
+        const titleElement = screen.getByRole("heading", {name: /upload files/i});
         expect(titleElement).toBeInTheDocument();
-        // expect(titleElement.textContent).toMatch(/upload/i);
     });
 
     it("renders a button with aria-label to toggle the widget", () => {

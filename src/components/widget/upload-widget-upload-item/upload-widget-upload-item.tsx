@@ -23,8 +23,14 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
     const styles = uploadItemVariantsStyles();
     const cancelUpload = useUploads((store) => store.cancelUpload);
 
-    const {name, file, compressedSize, compressionRate, status} = upload;
-    const uploadProgress = 10;
+    const {name, status, originalSizeInBytes} = upload;
+
+    const compressedSize = 10
+    const compressionRate = 10
+
+    const uploadProgress = upload.originalSizeInBytes > 0
+        ? Math.round((upload.uploadSizeInBytes * 100) / upload.originalSizeInBytes)
+        : 0;
 
     const statusMap: Record<string, StatusInfo> = {
         [UploadStatus.PROGRESS]: {
@@ -54,6 +60,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
         ? statusMap[status]
         : statusMap.default;
 
+
     return (
         <motion.article
             className={styles.container()}
@@ -72,10 +79,11 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
 
                 <div
                     className={styles.metadata()}
-                    aria-label={`File size: original ${formatBytes(file.size)}, compressed to ${compressedSize}, ${compressionRate}% reduction, ${currentStatus.label}`}
+                    aria-label={`File size: original ${formatBytes(originalSizeInBytes)}, compressed to ${compressedSize}, ${compressionRate}% reduction, ${currentStatus.label}`}
                 >
-                    <span className={styles.lineThrough()} aria-label={`Original size: ${formatBytes(file.size)}`}>
-                        {formatBytes(file.size)}
+                    <span className={styles.lineThrough()}
+                          aria-label={`Original size: ${formatBytes(originalSizeInBytes)}`}>
+                        {formatBytes(originalSizeInBytes)}
                     </span>
 
                     <div className={styles.separator()} aria-hidden="true"/>
@@ -98,20 +106,18 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
                 className="bg-zinc-800 rounded-full h-1 overflow-hidden group"
                 value={uploadProgress}
                 max={100}
-                aria-label={`Upload progress for ${upload?.name}`}
+                aria-label={`Upload progress for ${name}`}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={uploadProgress}
                 aria-valuetext={`${uploadProgress}% uploaded`}
-                data-status={upload.status}
+                data-status={status}
             >
                 <Progress.Indicator
-                    className={styles.progressIndicator({
-                        status: upload.status
-                    })}
-                    data-status={upload.status}
+                    className={styles.progressIndicator()}
+                    data-status={status}
                     style={{
-                        width: `${upload.status !== UploadStatus.PROGRESS ? `${uploadProgress}%` : 100}%`
+                        width: upload.status === UploadStatus.PROGRESS ? `${uploadProgress}%` : "100%",
                     }}
                 />
             </Progress.Root>
@@ -137,7 +143,7 @@ export function UploadWidgetUploadItem({upload, uploadId}: UploadWidgetUploadIte
 
                 <Button
                     size="icon"
-                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(upload.status!)}
+                    disabled={!([UploadStatus.ERROR, UploadStatus.CANCELED] as UploadStatus[]).includes(status!)}
                     aria-label={`Retry upload for ${name}`}
                     title="Retry upload"
                 >
