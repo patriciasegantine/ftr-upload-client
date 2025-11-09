@@ -50,7 +50,7 @@ export const useUploads = create<UploadState, [["zustand/immer", never]]>(
                 set((state) => {
                     state.uploads.set(uploadId, {
                         ...upload,
-                        status: "success",
+                        status: UploadStatus.PROGRESS,
                     });
                 });
             } catch (err) {
