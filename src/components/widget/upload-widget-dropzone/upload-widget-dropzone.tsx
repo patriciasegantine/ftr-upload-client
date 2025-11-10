@@ -5,10 +5,10 @@ import {motion} from "motion/react";
 import {usePendingUploads, useUploads} from "../../../store/uploads.ts";
 
 export function UploadWidgetDropzone() {
-    const amountOfUploads = useUploads(store => store.uploads.size);
     const addUploads = useUploads(store => store.addUploads);
-
+    const amountOfUploads = useUploads(store => store.uploads.size);
     const {isThereAnyPendingUploads, uploadGlobalPercentage} = usePendingUploads()
+
     const amountOfUploadsLabel = amountOfUploads === 1 ? 'file' : 'files';
 
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
