@@ -1,8 +1,10 @@
 # 📦 Upload Widget Client
 
-A **React + TypeScript** front-end application developed as part of a **postgraduate course in Full Stack Development**,
-designed to interact with the **Upload Widget Server** and provide a clean, modern, and responsive interface for file
-uploads.
+A React + TypeScript front-end application built to interact with an upload API, focusing on clean UI, state management,
+and modern front-end patterns.
+
+This project was built to practise and consolidate modern front-end patterns, explore integration with backend APIs, and
+experiment with tooling choices around state management, testing, and performance.
 
 ## 🎓 Academic Project
 
@@ -19,7 +21,8 @@ This project was developed during a postgraduate course in front-end development
 
 ## 🚀 Overview
 
-The project demonstrates modern front-end best practices, including:
+The project demonstrates modern front-end practices such as component composition, state management, API integration,
+and accessible UI patterns, with a strong focus on maintainability and developer experience.
 
 - Component-based architecture
 - API integration and data handling
@@ -104,5 +107,5 @@ frameworks with backend APIs, focusing on **performance**, **scalability**, and 
 
 📚 **Author**  
 Patricia Segantine  
-Postgraduate in Full Stack Development  
+Front-End Developer
 GitHub Profile – [Patricia-Segantine](https://github.com/patriciasegantine)
