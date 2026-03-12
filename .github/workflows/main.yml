@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  AWS_SOURCE_DIR: dist/
+  AWS_SOURCE_DIR: ./dist
 
 jobs:
   deploy:
