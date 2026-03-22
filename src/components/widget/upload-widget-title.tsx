@@ -1,5 +1,5 @@
-import {UploadCloud} from "lucide-react";
-import {usePendingUploads} from "../../store/uploads.ts";
+import { UploadCloud } from "lucide-react";
+import { usePendingUploads } from "../../store/uploads.ts";
 
 export const UploadWidgetTitle = () => {
     const {isThereAnyPendingUploads, uploadGlobalPercentage} = usePendingUploads()
@@ -21,7 +21,7 @@ export const UploadWidgetTitle = () => {
                     </h1>
                 ) : (
                     <h1 className="text-sm font-medium text-white">
-                        Upload files
+                        Upload files - test S3
                     </h1>
                 )}
 
