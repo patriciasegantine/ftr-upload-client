@@ -1,111 +1,99 @@
 # 📦 Upload Widget Client
 
-A React + TypeScript front-end application built to interact with an upload API, focusing on clean UI, state management,
-and modern front-end patterns.
+A modern file upload interface built with React and TypeScript, designed to deliver a smooth, fast, and accessible user experience when interacting with upload APIs.
 
-This project was built to practise and consolidate modern front-end patterns, explore integration with backend APIs, and
-experiment with tooling choices around state management, testing, and performance.
+## ✨ Why this project?
 
-## 🎓 Academic Project
+Uploading files sounds simple, but handling validation, progress feedback, and error states in a clean way is where things get interesting.
 
-This project was developed during a postgraduate course in front-end development, focusing on:
+This project focuses on building a **production-like upload experience**, with strong attention to:
 
-- Advanced front-end architecture with React and Vite
-- Type-safe components and hooks using TypeScript
-- Responsive and accessible UI built with Tailwind CSS
-- Integration with backend APIs for file upload and management
-- Test-driven development with Vitest and React Testing Library
-- Continuous Integration with GitHub Actions
+- UX clarity and feedback
+- Clean and scalable architecture
+- Type safety and maintainability
+- Performance and responsiveness
 
 ---
 
-## 🚀 Overview
+## 🚀 What it does
 
-The project demonstrates modern front-end practices such as component composition, state management, API integration,
-and accessible UI patterns, with a strong focus on maintainability and developer experience.
+- Upload files to a backend service (Cloudflare R2)
+- Show real-time upload progress
+- Handle errors and invalid formats gracefully
+- Provide clear feedback to users at every step
 
-- Component-based architecture
-- API integration and data handling
-- Form validation and feedback
-- Environment-based configuration with `.env`
-- Reusable UI components
-- Build optimisation with Vite
-- Automated testing and CI/CD pipeline
+---
 
-This application complements the **Upload Widget Server**, providing a front-end layer for testing and interacting with
-upload features.
+## 🧠 Key Highlights
+
+- Well-structured, component-driven architecture
+- Lightweight and efficient state management with Zustand
+- Strong focus on accessibility using Radix UI
+- Smooth animations with Motion
+- Fully typed with TypeScript
+- Tested with Vitest and React Testing Library
+- CI pipeline with GitHub Actions
 
 ---
 
 ## 🛠️ Tech Stack
 
-    - **React 19 (with Vite)**
-    - **TypeScript**
-    - **Tailwind CSS** & **Tailwind Variants**
-    - **Zustand** (State Management)
-    - **Motion** (Animations)
-    - **Radix UI** (Accessible Components)
-    - **React Dropzone** (File handling)
-    - **Vitest** (for unit testing)
-    - **React Testing Library** (for component testing)
+- React (Vite)
+- TypeScript
+- Tailwind CSS + Tailwind Variants
+- Zustand
+- Radix UI
+- Motion
+- React Dropzone
+- Vitest
+- React Testing Library
 
 ---
 
 ## ⚙️ Getting Started
 
-### 1. Clone the repository
+### 1. Clone the repo
 
 ```bash
-  git clone https://github.com/patriciasegantine/ftr-upload-client.git
-  cd ftr-upload-client
+git clone https://github.com/patriciasegantine/ftr-upload-client.git
+cd ftr-upload-client
 ```
-
 ### 2. Install dependencies
 
 ```bash
-  npm install
+npm install
 ```
-
-### 3. Create environment file
-
-Create a `.env` file in the project root:
-
-```bash
-  VITE_API_BASE_URL=http://localhost:3000
+### 3.Set environment variables
+Create a .env file:
+            
+```env
+VITE_API_BASE_URL=http://localhost:3000
 ```
-
 ### 4. Run the development server
 
 ```bash
-  npm run dev
+npm run dev
 ```
-
-### 5. Build for production
-
-```bash
-  npm run build
-```
-
----
-
 ## 💡 Features
+- Drag and drop file upload
+- Upload progress tracking
+- Error handling and validation
+- Responsive and accessible UI
+- Clean and reusable components
 
-- Upload files directly to the backend (Cloudflare R2 integration)
-- Display upload progress and server responses
-- Handle validation errors and invalid file formats
-- Responsive layout with Tailwind CSS
-- Type-safe and maintainable codebase
-
----
-
-## 🎯 Purpose
-
-This project was developed to strengthen front-end development skills and explore efficient ways to integrate modern UI
-frameworks with backend APIs, focusing on **performance**, **scalability**, and **developer experience**.
+## 🔗 Related Project
+This client works alongside the Upload Widget Server, forming a complete upload flow from UI to storage.
+- [Upload Widget Server](https://github.com/patriciasegantine/ftr-upload-server)
 
 ---
 
-📚 **Author**  
-Patricia Segantine  
-Front-End Developer
-GitHub Profile – [Patricia-Segantine](https://github.com/patriciasegantine)
+## 💡 Notes
+
+This project was developed as part of a postgraduate programme, with a focus on building a production-ready full-stack application, emphasising scalability, performance, and clean architecture.
+
+---
+
+## 👩‍💻 Author
+
+Created by **Patricia Segantine** — Frontend Engineer
+GitHub: https://github.com/patriciasegantine
