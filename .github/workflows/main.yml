@@ -10,6 +10,7 @@ env:
 
 jobs:
   deploy:
+    name: Build client
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,7 +21,7 @@ jobs:
         id: setup-node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -52,3 +53,9 @@ jobs:
         run: |
           aws s3 sync ${{env.AWS_SOURCE_DIR }} s3://${{ vars.S3_BUCKET_NAME }}/ --delete
           echo "✅ Deploy completed successfully!"
+
+      - name: Invalidate CloudFront cache
+        id: invalidate-cloudfront-cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+          echo "✅ CloudFront invalidation created successfully!"
