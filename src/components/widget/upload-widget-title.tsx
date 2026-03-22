@@ -21,7 +21,7 @@ export const UploadWidgetTitle = () => {
                     </h1>
                 ) : (
                     <h1 className="text-sm font-medium text-white">
-                        Upload files - test S3
+                        Upload files
                     </h1>
                 )}
 
